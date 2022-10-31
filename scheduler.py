@@ -21,5 +21,13 @@ class Scheduler:
     def main_loop(self):
         while self.task_map:
             task = self.ready.get()
-            result = task.run()
+            try:
+                result = task.run()
+            except StopIteration:
+                self.exit()
+                continue
             self.schedule(task)
+
+    def exit(self, task):
+        print(f"Task {task.tid} terminated.")
+        del self.task_map[task.tid]
